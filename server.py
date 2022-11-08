@@ -17,12 +17,9 @@ shuffle = False
 pattern = "patrickstar"
 extra_args = ""
 process = None
-board = None
-leds = None
 
-
-def run():
-    global board, leds
+def run(pattern, extra_args):
+    print("run", pattern, extra_args)
     signal.signal(signal.SIGTERM, exit_gracefully)
     board = tile.TileArray(rows=rows, cols=cols, height=height, width=width)
     leds = tile.LEDStripTeensyUART(board)
@@ -39,7 +36,7 @@ def start_proc():
     if process is not None:
         process.terminate()
         process.join()
-    process = multiprocessing.Process(target=run)
+    process = multiprocessing.Process(target=run, args=(pattern, extra_args))
     process.start()
 
 
@@ -66,6 +63,7 @@ def save_pattern():
     shuffle = False
     pattern = request.form['pattern']
     extra_args = request.form['extra']
+    print("start", pattern, extra_args)
     start_proc()
     return redirect("/")
 
